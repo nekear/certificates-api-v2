@@ -1,0 +1,31 @@
+version: '3.8'
+
+name: certificates
+services:
+  mysql:
+    container_name: certificates-mysql
+    image: 'mysql:latest'
+    restart:
+      always
+    env_file:
+      - .env
+    ports:
+      - '${CONTAINER_MYSQL_PORT}:3306' # {host port}:3306
+    healthcheck:
+      test: [ "CMD-SHELL", 'mysqladmin ping' ]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
+  api:
+    container_name: certificates-api
+    image: 'certificates-api:latest'
+    env_file:
+      - .env
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - '8081:8080' # {host port}:8080
