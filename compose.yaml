@@ -22,6 +22,8 @@ services:
     image: 'certificates-api:latest'
     env_file:
       - .env
+    environment:
+      - MYSQL_HOST=mysql
     build:
       dockerfile: Dockerfile
     depends_on:

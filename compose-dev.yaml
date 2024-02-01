@@ -9,7 +9,3 @@ services:
       - .env
     ports:
       - '${CONTAINER_MYSQL_PORT}:3306'
-  app:
-    image: 'eclipse-temurin:21-jdk-alpine'
-    ports:
-      - '8080:8080'
