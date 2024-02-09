@@ -9,7 +9,14 @@ spring:
   docker:
     compose:
       file: compose-dev.yaml
+
 server:
   error:
     include-binding-errors: always
     include-message: always
+
+jwt:
+  private:
+    key: classpath:keys/app.key
+  public:
+    key: classpath:keys/app.pub
