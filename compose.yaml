@@ -30,6 +30,7 @@ services:
       mysql:
         condition: service_healthy
     ports:
-      - '8081:8080' # {host port}:8080
+      - '8080:8080' # {host port}:8080
     volumes:
-      - /src/main/resources/keys:/app/keys
+      - ./src/main/resources/keys:/app/keys
+      - ./src/main/resources/db:/app/db # idk why, but docker removes "db" folder from the image, making it impossible to access the liquibase changelog
