@@ -1,9 +1,11 @@
 package com.github.nekear.certificates_api.web.dtos.auth;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+@Builder
+public class MeResponse {
     private String username;
-    private String password;
+    private String role;
 }

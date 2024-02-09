@@ -68,14 +68,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.setContext(ctx);
                 }
-            }else {
-                throw new RuntimeException("Username is empty or user is already authenticated.");
             }
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | RuntimeException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             System.out.println(e.getMessage());
-
+        } finally {
             filterChain.doFilter(request, response);
-            return;
         }
     }
 }
