@@ -1,7 +1,7 @@
 package com.github.nekear.certificates_api.filters;
 
-import com.github.nekear.certificates_api.web.services.UserService;
 import com.github.nekear.certificates_api.utils.JwtManager;
+import com.github.nekear.certificates_api.web.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -45,11 +46,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             var username = jwtManager.extractUsername(token);
 
             // If the username is not empty and the user is not authenticated, then authenticate the user
-            if(StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // Getting user by the username
                 var user = userService.findByUsername(username);
 
-                if(jwtManager.isTokenValid(token, user)){
+                if (jwtManager.isTokenValid(token, user)) {
                     // Creating empty auth context
                     var ctx = SecurityContextHolder.createEmptyContext();
 
@@ -69,7 +70,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
+            throw new AuthenticationException(e.getMessage());
         } finally {
             filterChain.doFilter(request, response);
         }

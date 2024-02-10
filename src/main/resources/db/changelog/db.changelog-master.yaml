@@ -3,3 +3,7 @@ databaseChangeLog:
       file: db/changelog/changeset/create-certificates-table.yaml
   - include:
       file: db/changelog/changeset/create-users-table.yaml
+  - include:
+      file: db/changelog/changeset/create-tags-table.yaml
+  - include:
+      file: db/changelog/changeset/create-certificates_to_tags-table.yaml

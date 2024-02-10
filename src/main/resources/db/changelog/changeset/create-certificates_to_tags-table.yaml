@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-certificates_to_tags-table
+      author: nekear
+      changes:
+        - createTable:
+            tableName: certificates_to_tags
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: certificate_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: certificates_to_tags
+            baseColumnNames: certificate_id
+            referencedTableName: certificates
+            referencedColumnNames: id
+            constraintName: fk_certificates_to_tags_certificate_id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: certificates_to_tags
+            baseColumnNames: tag_id
+            referencedTableName: tags
+            referencedColumnNames: id
+            constraintName: fk_certificates_to_tags_tag_id
+            onDelete: CASCADE

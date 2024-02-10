@@ -1,8 +1,10 @@
 package com.github.nekear.certificates_api.web.services;
 
+import com.github.nekear.certificates_api.web.exceptions.entities.FlowException;
 import com.github.nekear.certificates_api.web.entities.User;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.UsersDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ public class UserService {
     public User create(User user) {
         // Checking for the user existence
         if (usersDAO.existsByUsername(user.getUsername()))
-            throw new RuntimeException("User already exists");
+            throw new FlowException("User already exists", HttpStatus.NOT_ACCEPTABLE);
 
         // Registering the user and getting the newly created user id back
         var userId = usersDAO.createOne(user);
