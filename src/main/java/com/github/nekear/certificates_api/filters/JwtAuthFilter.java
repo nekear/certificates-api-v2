@@ -8,11 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
@@ -27,6 +30,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtManager jwtManager;
     private final UserService userService;
 
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver exceptionResolver;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Getting Authorization header
@@ -38,11 +45,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Cutting off Bearer prefix
-        var token = StringUtils.substring(authHeader, BEARER_PREFIX.length());
-
-        // Getting username from the JWT token
         try {
+            // Cutting off Bearer prefix
+            var token = StringUtils.substring(authHeader, BEARER_PREFIX.length());
+
+            // Getting username from the JWT token
             var username = jwtManager.extractUsername(token);
 
             // If the username is not empty and the user is not authenticated, then authenticate the user
@@ -69,10 +76,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.setContext(ctx);
                 }
             }
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new AuthenticationException(e.getMessage());
-        } finally {
+
             filterChain.doFilter(request, response);
+        }catch (Exception e) {
+            exceptionResolver.resolveException(request, response, null, e);
         }
     }
 }

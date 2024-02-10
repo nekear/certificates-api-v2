@@ -1,6 +1,6 @@
 package com.github.nekear.certificates_api.web.services;
 
-import com.github.nekear.certificates_api.web.exceptions.entities.FlowException;
+import com.github.nekear.certificates_api.exceptions.FlowException;
 import com.github.nekear.certificates_api.web.entities.User;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.UsersDAO;
 import lombok.RequiredArgsConstructor;

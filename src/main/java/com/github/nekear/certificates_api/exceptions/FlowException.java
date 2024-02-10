@@ -1,4 +1,4 @@
-package com.github.nekear.certificates_api.web.exceptions.entities;
+package com.github.nekear.certificates_api.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

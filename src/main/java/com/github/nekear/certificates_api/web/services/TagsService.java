@@ -1,6 +1,6 @@
 package com.github.nekear.certificates_api.web.services;
 
-import com.github.nekear.certificates_api.web.exceptions.entities.FlowException;
+import com.github.nekear.certificates_api.exceptions.FlowException;
 import com.github.nekear.certificates_api.web.dtos.tags.TagCreationRequest;
 import com.github.nekear.certificates_api.web.entities.Tag;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.TagsDAO;
