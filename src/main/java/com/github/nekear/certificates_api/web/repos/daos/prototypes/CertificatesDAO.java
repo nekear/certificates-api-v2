@@ -11,4 +11,6 @@ public interface CertificatesDAO {
     Optional<Certificate> findById(long id);
 
     Long createOne(Certificate certificate);
+
+    void connectTag(Long certificateId, Long tagId);
 }

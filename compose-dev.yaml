@@ -9,3 +9,5 @@ services:
       - .env
     ports:
       - '${CONTAINER_MYSQL_PORT}:3306'
+    command:
+      - --log-bin-trust-function-creators=1 # https://github.com/kestra-io/kestra/blob/develop/docker-compose-ci.yml

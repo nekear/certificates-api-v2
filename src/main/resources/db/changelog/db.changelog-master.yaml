@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/changeset/create-tags-table.yaml
   - include:
       file: db/changelog/changeset/create-certificates_to_tags-table.yaml
+  - include:
+      file: db/changelog/changeset/create-glueTags-function.sql

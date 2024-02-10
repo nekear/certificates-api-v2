@@ -30,6 +30,7 @@ public class CertificatesService {
                 .description(certificate.description())
                 .price(certificate.price())
                 .duration(certificate.duration())
+                .tags(certificate.tags())
                 .build();
 
         var generatedId = certificatesDAO.createOne(newCertificate);

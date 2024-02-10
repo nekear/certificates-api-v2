@@ -16,6 +16,8 @@ services:
       interval: 10s
       timeout: 2s
       retries: 10
+    command:
+      - --log-bin-trust-function-creators=1
 
   api:
     container_name: certificates-api
