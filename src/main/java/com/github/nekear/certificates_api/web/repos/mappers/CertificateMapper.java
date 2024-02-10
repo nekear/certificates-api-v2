@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CertificateMapper implements RowMapper<Certificate> {
     @Override
@@ -22,7 +24,7 @@ public class CertificateMapper implements RowMapper<Certificate> {
                 .updatedAt(rs.getTimestamp("updated_at").toInstant().atZone(ZoneOffset.UTC))
                 .build();
 
-        if(rs.getString("tags") != null)
+        if(rs.getString("tags") != null){
             certificate.setTags(
                     Arrays.stream(rs.getString("tags").split("\\?"))
                             .map(tagStr -> {
@@ -33,6 +35,9 @@ public class CertificateMapper implements RowMapper<Certificate> {
                                         .build();
                             }).toList()
             );
+        }else{
+            certificate.setTags(new ArrayList<>());
+        }
 
         return certificate;
     }

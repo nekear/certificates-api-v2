@@ -14,7 +14,8 @@ server:
   error:
     include-binding-errors: always
     include-message: always
-
+  tomcat:
+    relaxed-query-chars: "[,]"
 jwt:
   private:
     key: classpath:keys/app.key

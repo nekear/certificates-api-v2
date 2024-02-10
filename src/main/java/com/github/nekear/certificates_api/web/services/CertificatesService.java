@@ -31,17 +31,20 @@ public class CertificatesService {
         Pageable pageable = Pageable.unpaged();
 
         if (searchConfig != null) {
-            var tag = searchConfig.getFilters().getTags();
-            var main = searchConfig.getFilters().getMain();
+            if(searchConfig.getFilters() != null) {
+                var tag = searchConfig.getFilters().getTags();
+                var main = searchConfig.getFilters().getMain();
+
+
+                if (tag != null && !tag.isEmpty())
+                    mainSearch = UtilsManager.clean(tag);
+
+                if (main != null && !main.isEmpty())
+                    tagsSearch = UtilsManager.clean(main);
+            }
+
             var orderBy = searchConfig.getSorting(Map.of(CertificatesSortCategories.date, "ts_created"));
-
             pageable = searchConfig.formPageable(orderBy);
-
-            if (tag != null && !tag.isEmpty())
-                mainSearch = UtilsManager.clean(tag);
-
-            if (main != null && !main.isEmpty())
-                tagsSearch = UtilsManager.clean(main);
         }
 
         var certificatesPage = certificatesDAO.findAll(

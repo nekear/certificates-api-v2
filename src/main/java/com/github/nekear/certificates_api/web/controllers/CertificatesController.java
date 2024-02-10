@@ -22,7 +22,9 @@ public class CertificatesController {
     }
 
     @GetMapping
-    public FilterResponse<Certificate> getCertificates(@RequestBody Optional<FilterRequest<CertificatesFilter, CertificatesSortCategories>> searchConfig) {
+    public FilterResponse<Certificate> getCertificates(@ModelAttribute Optional<FilterRequest<CertificatesFilter, CertificatesSortCategories>> searchConfig) {
+        System.out.println(searchConfig);
+
         return certificatesService.getCertificates(searchConfig.orElse(null));
     }
 

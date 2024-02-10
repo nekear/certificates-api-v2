@@ -3,18 +3,14 @@ package com.github.nekear.certificates_api.web.repos.daos;
 
 import com.github.nekear.certificates_api.web.entities.Certificate;
 import com.github.nekear.certificates_api.web.entities.Tag;
-import com.github.nekear.certificates_api.web.entities.enums.SortCategory;
-import com.github.nekear.certificates_api.web.entities.enums.SortType;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.CertificatesDAO;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.TagsDAO;
 import com.github.nekear.certificates_api.web.repos.mappers.CertificateMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,7 +18,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Statement;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Repository
