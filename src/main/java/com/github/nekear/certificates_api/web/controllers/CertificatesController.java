@@ -1,11 +1,16 @@
 package com.github.nekear.certificates_api.web.controllers;
 
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificateMutationDTO;
+import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesFilter;
+import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesSortCategories;
+import com.github.nekear.certificates_api.web.dtos.general.FilterRequest;
+import com.github.nekear.certificates_api.web.dtos.general.FilterResponse;
 import com.github.nekear.certificates_api.web.entities.Certificate;
 import com.github.nekear.certificates_api.web.services.CertificatesService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/certificates")
@@ -17,8 +22,8 @@ public class CertificatesController {
     }
 
     @GetMapping
-    public List<Certificate> getCertificates() {
-        return certificatesService.getCertificates();
+    public FilterResponse<Certificate> getCertificates(@RequestBody Optional<FilterRequest<CertificatesFilter, CertificatesSortCategories>> searchConfig) {
+        return certificatesService.getCertificates(searchConfig.orElse(null));
     }
 
     @PostMapping

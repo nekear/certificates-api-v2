@@ -1,12 +1,13 @@
 package com.github.nekear.certificates_api.web.repos.daos.prototypes;
 
 import com.github.nekear.certificates_api.web.entities.Certificate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CertificatesDAO {
-    List<Certificate> findAll();
+    Page<Certificate> findAll(String mainSearch, String tagsSearch, Pageable pageable);
 
     Optional<Certificate> findById(long id);
 
