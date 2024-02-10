@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CertificatesDAO {
-    List<Certificate> getAll();
+    List<Certificate> findAll();
 
-    Optional<Certificate> getById(long id);
+    Optional<Certificate> findById(long id);
 
     Long createOne(Certificate certificate);
 }

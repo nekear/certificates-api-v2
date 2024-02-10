@@ -1,4 +1,4 @@
-package com.github.nekear.certificates_api.web.configs;
+package com.github.nekear.certificates_api.configs;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;

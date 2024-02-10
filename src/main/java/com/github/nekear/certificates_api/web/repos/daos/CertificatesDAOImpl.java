@@ -24,12 +24,12 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     }
 
     @Override
-    public List<Certificate> getAll() {
+    public List<Certificate> findAll() {
         return jdbcTemplate.query("SELECT * FROM certificates", new CertificateMapper());
     }
 
     @Override
-    public Optional<Certificate> getById(long id) {
+    public Optional<Certificate> findById(long id) {
         var GET_SQL = "SELECT * FROM certificates WHERE id = ?";
 
         try {

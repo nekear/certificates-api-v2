@@ -17,7 +17,7 @@ public class UserService {
             throw new RuntimeException("User already exists");
 
         // Registering the user and getting the newly created user id back
-        var userId = usersDAO.create(user);
+        var userId = usersDAO.createOne(user);
 
         user.setId(userId);
 

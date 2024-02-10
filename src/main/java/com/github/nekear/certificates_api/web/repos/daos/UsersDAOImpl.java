@@ -21,7 +21,7 @@ public class UsersDAOImpl implements UsersDAO {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public long create(User user) {
+    public long createOne(User user) {
         var INSERT_SQL = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();

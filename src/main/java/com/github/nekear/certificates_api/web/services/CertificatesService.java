@@ -17,11 +17,11 @@ public class CertificatesService {
     }
 
     public List<Certificate> getCertificates() {
-        return certificatesDAO.getAll();
+        return certificatesDAO.findAll();
     }
 
     public Optional<Certificate> getCertificateById(long id) {
-        return certificatesDAO.getById(id);
+        return certificatesDAO.findById(id);
     }
 
     public Optional<Certificate> createCertificate(CertificateMutationDTO certificate) {
@@ -34,6 +34,6 @@ public class CertificatesService {
 
         var generatedId = certificatesDAO.createOne(newCertificate);
 
-        return certificatesDAO.getById(generatedId);
+        return certificatesDAO.findById(generatedId);
     }
 }

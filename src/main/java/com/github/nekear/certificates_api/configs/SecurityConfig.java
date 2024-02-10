@@ -1,6 +1,6 @@
-package com.github.nekear.certificates_api.web.configs;
+package com.github.nekear.certificates_api.configs;
 
-import com.github.nekear.certificates_api.web.filters.JwtAuthFilter;
+import com.github.nekear.certificates_api.filters.JwtAuthFilter;
 import com.github.nekear.certificates_api.web.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @EnableWebSecurity

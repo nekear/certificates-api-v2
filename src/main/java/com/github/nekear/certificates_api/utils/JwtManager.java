@@ -1,4 +1,4 @@
-package com.github.nekear.certificates_api.web.utils;
+package com.github.nekear.certificates_api.utils;
 
 import com.github.nekear.certificates_api.web.entities.User;
 import io.jsonwebtoken.Claims;
