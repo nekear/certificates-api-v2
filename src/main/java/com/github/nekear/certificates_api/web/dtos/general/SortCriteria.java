@@ -1,16 +1,14 @@
 package com.github.nekear.certificates_api.web.dtos.general;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.domain.Sort;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
-public class SortCriteria<T> {
-    private T column;
+public class SortCriteria {
+    private String column;
     private Sort.Direction direction;
 }

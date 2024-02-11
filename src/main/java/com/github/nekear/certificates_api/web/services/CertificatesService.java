@@ -2,19 +2,14 @@ package com.github.nekear.certificates_api.web.services;
 
 import com.github.nekear.certificates_api.utils.UtilsManager;
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificateMutationDTO;
-import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesFilter;
+import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesFilterRequest;
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesSortCategories;
-import com.github.nekear.certificates_api.web.dtos.general.FilterRequest;
 import com.github.nekear.certificates_api.web.dtos.general.FilterResponse;
 import com.github.nekear.certificates_api.web.entities.Certificate;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.CertificatesDAO;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +21,7 @@ public class CertificatesService {
         this.certificatesDAO = certificatesDAO;
     }
 
-    public FilterResponse<Certificate> getCertificates(FilterRequest<CertificatesFilter, CertificatesSortCategories> searchConfig) {
+    public FilterResponse<Certificate> getCertificates(CertificatesFilterRequest searchConfig) {
         String mainSearch = null, tagsSearch = null;
         Pageable pageable = Pageable.unpaged();
 
@@ -35,15 +30,15 @@ public class CertificatesService {
                 var tag = searchConfig.getFilters().getTags();
                 var main = searchConfig.getFilters().getMain();
 
-
-                if (tag != null && !tag.isEmpty())
-                    mainSearch = UtilsManager.clean(tag);
-
                 if (main != null && !main.isEmpty())
-                    tagsSearch = UtilsManager.clean(main);
+                    mainSearch = UtilsManager.clean(main);
+
+                if (tag != null && !tag.isEmpty()) {
+                    tagsSearch = UtilsManager.clean(tag);
+                }
             }
 
-            var orderBy = searchConfig.getSorting(Map.of(CertificatesSortCategories.date, "ts_created"));
+            var orderBy = searchConfig.getSorting(Map.of(CertificatesSortCategories.date.toString(), "created_at"));
             pageable = searchConfig.formPageable(orderBy);
         }
 

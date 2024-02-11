@@ -15,22 +15,20 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @ToString
-public class FilterRequest<Filter, SortCategories> {
-    private Filter filters;
-
-    private List<SortCriteria<SortCategories>> sorting = new LinkedList<>();
+public class FilterRequest {
+    private List<SortCriteria> sorting = new LinkedList<>();
 
     private PaginationRequest pagination;
 
     /**
      * Utility function to build {@link Sort Spring Data JPA Sort} object from specified sorting parameters.
      *
-     * @param columnNamesTransformers if columns names at {@link SortCategories} differ from real column names in the db, you can specify their relationship here.
+     * @param columnNamesTransformers if columns names at String differ from real column names in the db, you can specify their relationship here.
      */
-    public Sort getSorting(Map<SortCategories, String> columnNamesTransformers) {
+    public Sort getSorting(Map<String, String> columnNamesTransformers) {
         return Sort.by(sorting.stream().map(x -> new Sort.Order(
                 x.getDirection(),
-                columnNamesTransformers.containsKey(x.getColumn()) ? columnNamesTransformers.get(x.getColumn()) : x.getColumn().toString()
+                columnNamesTransformers.containsKey(x.getColumn()) ? columnNamesTransformers.get(x.getColumn()) : x.getColumn()
         )).toList().toArray(new Sort.Order[0]));
     }
 
