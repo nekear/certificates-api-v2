@@ -135,4 +135,10 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     public void connectTag(Long certificateId, Long tagId) {
         jdbcTemplate.update("INSERT INTO certificates_to_tags (certificate_id, tag_id) VALUES (?, ?)", certificateId, tagId);
     }
+
+    @Override
+    @Transactional
+    public boolean deleteOne(long id) {
+        return jdbcTemplate.update("DELETE FROM certificates WHERE id = ?", id) > 0;
+    }
 }

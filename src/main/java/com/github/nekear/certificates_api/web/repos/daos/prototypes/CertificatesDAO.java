@@ -14,4 +14,6 @@ public interface CertificatesDAO {
     Long createOne(Certificate certificate);
 
     void connectTag(Long certificateId, Long tagId);
+
+    boolean deleteOne(long id);
 }

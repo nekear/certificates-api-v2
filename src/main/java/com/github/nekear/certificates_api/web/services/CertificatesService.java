@@ -68,4 +68,8 @@ public class CertificatesService {
 
         return certificatesDAO.findById(generatedId);
     }
+
+    public boolean deleteCertificate(long id) {
+        return certificatesDAO.deleteOne(id);
+    }
 }
