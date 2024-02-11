@@ -13,7 +13,11 @@ public interface CertificatesDAO {
 
     Long createOne(Certificate certificate);
 
+    void updateOne(Certificate certificate);
+
     void connectTag(Long certificateId, Long tagId);
 
     boolean deleteOne(long id);
+
+    boolean existsById(long id);
 }

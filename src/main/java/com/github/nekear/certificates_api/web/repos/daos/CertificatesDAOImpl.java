@@ -132,6 +132,32 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     }
 
     @Override
+    @Transactional
+    public void updateOne(Certificate certificate) {
+        var UPDATE_SQL = "UPDATE certificates SET name = ?, description = ?, price = ?, duration = ? WHERE id = ?";
+
+        jdbcTemplate.update(UPDATE_SQL, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getId());
+
+        // Deleting all connections to tags
+        jdbcTemplate.update("DELETE FROM certificates_to_tags WHERE certificate_id = ?", certificate.getId());
+
+        // Reconnecting tags
+        List<Tag> tags = certificate.getTags();
+
+        if (tags != null) {
+            // Creating new tags (without filtering on id == null, since trigger will remove all available connections and tags)
+            tags.forEach(x -> {
+                var tagId = tagsDAO.createOne(x);
+                x.setId(tagId);
+            });
+
+            // Connecting tags to the certificate
+            tags.forEach(x -> connectTag(certificate.getId(), x.getId()));
+        }
+    }
+
+
+    @Override
     public void connectTag(Long certificateId, Long tagId) {
         jdbcTemplate.update("INSERT INTO certificates_to_tags (certificate_id, tag_id) VALUES (?, ?)", certificateId, tagId);
     }
@@ -140,5 +166,10 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     @Transactional
     public boolean deleteOne(long id) {
         return jdbcTemplate.update("DELETE FROM certificates WHERE id = ?", id) > 0;
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM certificates WHERE id = ?", new Object[]{id}, Integer.class) > 0;
     }
 }

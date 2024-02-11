@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/changeset/create-glueTags-function.sql
   - include:
       file: db/changelog/changeset/create-countConnectedTagsWithName-function.sql
+  - include:
+      file: db/changelog/changeset/create-afterCertificateTagDeletion-trigger.sql

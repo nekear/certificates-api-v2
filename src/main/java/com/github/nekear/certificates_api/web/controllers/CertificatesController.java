@@ -32,6 +32,12 @@ public class CertificatesController {
                 .orElseThrow(() -> new FlowException("Unable to create certificate", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    @PutMapping("/{id}")
+    public Certificate updateCertificate(@PathVariable("id") long id, @RequestBody CertificateMutationDTO certificate) {
+        return certificatesService.updateCertificate(id, certificate)
+                .orElseThrow(() -> new FlowException("Unable to update certificate", HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
     @GetMapping("/{id}")
     public Certificate getCertificateById(@PathVariable("id") long id) {
         return certificatesService.getCertificateById(id)

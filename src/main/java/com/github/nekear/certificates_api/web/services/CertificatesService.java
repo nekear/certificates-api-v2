@@ -1,5 +1,6 @@
 package com.github.nekear.certificates_api.web.services;
 
+import com.github.nekear.certificates_api.exceptions.FlowException;
 import com.github.nekear.certificates_api.utils.UtilsManager;
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificateMutationDTO;
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesFilterRequest;
@@ -7,7 +8,9 @@ import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesSort
 import com.github.nekear.certificates_api.web.dtos.general.FilterResponse;
 import com.github.nekear.certificates_api.web.entities.Certificate;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.CertificatesDAO;
+import org.intellij.lang.annotations.Flow;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -51,7 +54,21 @@ public class CertificatesService {
         return FilterResponse.of(certificatesPage);
     }
 
-    public Optional<Certificate> getCertificateById(long id) {
+    public Optional<Certificate> updateCertificate(long id, CertificateMutationDTO certificate) {
+        if(!this.existsById(id))
+            throw new FlowException("Certificate not found", HttpStatus.NOT_FOUND);
+
+        var updatedCertificate = Certificate.builder()
+                .id(id)
+                .name(certificate.name())
+                .description(certificate.description())
+                .price(certificate.price())
+                .duration(certificate.duration())
+                .tags(certificate.tags())
+                .build();
+
+        certificatesDAO.updateOne(updatedCertificate);
+
         return certificatesDAO.findById(id);
     }
 
@@ -69,7 +86,18 @@ public class CertificatesService {
         return certificatesDAO.findById(generatedId);
     }
 
+    public boolean existsById(long id) {
+        return certificatesDAO.existsById(id);
+    }
+
+    public Optional<Certificate> getCertificateById(long id) {
+        return certificatesDAO.findById(id);
+    }
+
     public boolean deleteCertificate(long id) {
+        if(!this.existsById(id))
+            throw new FlowException("Certificate not found", HttpStatus.NOT_FOUND);
+
         return certificatesDAO.deleteOne(id);
     }
 }
