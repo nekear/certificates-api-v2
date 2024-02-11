@@ -7,7 +7,9 @@ import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesFilt
 import com.github.nekear.certificates_api.web.dtos.certificates.CertificatesSortCategories;
 import com.github.nekear.certificates_api.web.dtos.general.FilterResponse;
 import com.github.nekear.certificates_api.web.entities.Certificate;
+import com.github.nekear.certificates_api.web.entities.Role;
 import com.github.nekear.certificates_api.web.repos.daos.prototypes.CertificatesDAO;
+import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Flow;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,14 +19,15 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CertificatesService {
-    CertificatesDAO certificatesDAO;
+    private final CertificatesDAO certificatesDAO;
+    private final AuthService authService;
 
-    public CertificatesService(CertificatesDAO certificatesDAO) {
-        this.certificatesDAO = certificatesDAO;
-    }
 
     public FilterResponse<Certificate> getCertificates(CertificatesFilterRequest searchConfig) {
+        var user = authService.getCurrentUser();
+
         String mainSearch = null, tagsSearch = null;
         Pageable pageable = Pageable.unpaged();
 
@@ -48,13 +51,16 @@ public class CertificatesService {
         var certificatesPage = certificatesDAO.findAll(
                 mainSearch,
                 tagsSearch,
-                pageable
+                pageable,
+                user.getRole() == Role.ADMIN ? -1 : user.getId()
         );
 
         return FilterResponse.of(certificatesPage);
     }
 
     public Optional<Certificate> updateCertificate(long id, CertificateMutationDTO certificate) {
+        var user = authService.getCurrentUser();
+
         if(!this.existsById(id))
             throw new FlowException("Certificate not found", HttpStatus.NOT_FOUND);
 
@@ -69,21 +75,25 @@ public class CertificatesService {
 
         certificatesDAO.updateOne(updatedCertificate);
 
-        return certificatesDAO.findById(id);
+        return certificatesDAO.findById(id, user.getRole() == Role.ADMIN ? -1 : user.getId());
     }
 
     public Optional<Certificate> createCertificate(CertificateMutationDTO certificate) {
+        // Getting current user
+        var currentUser = authService.getCurrentUser();
+
         var newCertificate = Certificate.builder()
                 .name(certificate.name())
                 .description(certificate.description())
                 .price(certificate.price())
                 .duration(certificate.duration())
                 .tags(certificate.tags())
+                .user(currentUser)
                 .build();
 
         var generatedId = certificatesDAO.createOne(newCertificate);
 
-        return certificatesDAO.findById(generatedId);
+        return certificatesDAO.findById(generatedId, currentUser.getId());
     }
 
     public boolean existsById(long id) {
@@ -91,13 +101,17 @@ public class CertificatesService {
     }
 
     public Optional<Certificate> getCertificateById(long id) {
-        return certificatesDAO.findById(id);
+        var user = authService.getCurrentUser();
+
+        return certificatesDAO.findById(id, user.getRole() == Role.ADMIN ? -1 : user.getId());
     }
 
     public boolean deleteCertificate(long id) {
+        var user = authService.getCurrentUser();
+
         if(!this.existsById(id))
             throw new FlowException("Certificate not found", HttpStatus.NOT_FOUND);
 
-        return certificatesDAO.deleteOne(id);
+        return certificatesDAO.deleteOne(id, user.getRole() == Role.ADMIN ? -1 : user.getId());
     }
 }

@@ -15,4 +15,5 @@ public class Certificate {
     private String name, description;
     private List<Tag> tags;
     private ZonedDateTime createdAt, updatedAt;
+    private User user;
 }

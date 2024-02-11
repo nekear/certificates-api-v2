@@ -32,13 +32,13 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     private final TagsDAO tagsDAO;
 
     @Override
-    public Page<Certificate> findAll(String mainSearch, String tagsSearch, Pageable pageable) {
+    public Page<Certificate> findAll(String mainSearch, String tagsSearch, Pageable pageable, long userId) {
         var GET_SQL = "SELECT *, glueTags(certificates.id) as tags FROM certificates ";
 
         List<Object> queryParams = new LinkedList<>();
 
         StringJoiner joiner = new StringJoiner(" AND ");
-        if (mainSearch != null || tagsSearch != null) {
+        if (mainSearch != null || tagsSearch != null || userId != -1) {
             GET_SQL += "WHERE ";
 
             if (mainSearch != null) {
@@ -52,8 +52,15 @@ public class CertificatesDAOImpl implements CertificatesDAO {
                 queryParams.add("%" + tagsSearch + "%");
             }
 
+            // Filtering by user_id
+            if (userId != -1) {
+                joiner.add("user_id = ?");
+                queryParams.add(userId);
+            }
+
             GET_SQL += joiner + " ";
         }
+
 
         // Ordering
         if (pageable.getSort().isSorted()) {
@@ -70,7 +77,7 @@ public class CertificatesDAOImpl implements CertificatesDAO {
 
         // Counting total elements for PageImpl
         var COUNT_SQL = "SELECT COUNT(*) FROM certificates ";
-        if (mainSearch != null || tagsSearch != null) {
+        if (mainSearch != null || tagsSearch != null || userId != -1) {
             COUNT_SQL += "WHERE " + joiner;
         }
         long totalElements = jdbcTemplate.queryForObject(COUNT_SQL, queryParams.toArray(), Long.class);
@@ -83,10 +90,13 @@ public class CertificatesDAOImpl implements CertificatesDAO {
 
 
     @Override
-    public Optional<Certificate> findById(long id) {
+    public Optional<Certificate> findById(long id, long userId) {
         var GET_SQL = "SELECT *, glueTags(certificates.id) as tags FROM certificates WHERE id = ?";
 
         try {
+            if (userId != -1)
+                return Optional.of(jdbcTemplate.queryForObject(GET_SQL + " AND user_id = ?", new Object[]{id, userId}, new CertificateMapper()));
+
             return Optional.of(jdbcTemplate.queryForObject(GET_SQL, new Object[]{id}, new CertificateMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -96,7 +106,7 @@ public class CertificatesDAOImpl implements CertificatesDAO {
     @Override
     @Transactional
     public Long createOne(Certificate certificate) {
-        var INSERT_SQL = "INSERT INTO certificates (name, description, price, duration) VALUES (?, ?, ?, ?)";
+        var INSERT_SQL = "INSERT INTO certificates (name, description, price, duration, user_id) VALUES (?, ?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -109,6 +119,7 @@ public class CertificatesDAOImpl implements CertificatesDAO {
             stmt.setString(index++, certificate.getDescription());
             stmt.setDouble(index++, certificate.getPrice());
             stmt.setInt(index++, certificate.getDuration());
+            stmt.setLong(index++, certificate.getUser().getId());
 
             return stmt;
         }, keyHolder);
@@ -164,7 +175,10 @@ public class CertificatesDAOImpl implements CertificatesDAO {
 
     @Override
     @Transactional
-    public boolean deleteOne(long id) {
+    public boolean deleteOne(long id, long userId) {
+        if (userId != -1)
+            return jdbcTemplate.update("DELETE FROM certificates WHERE id = ? AND user_id = ?", id, userId) > 0;
+
         return jdbcTemplate.update("DELETE FROM certificates WHERE id = ?", id) > 0;
     }
 

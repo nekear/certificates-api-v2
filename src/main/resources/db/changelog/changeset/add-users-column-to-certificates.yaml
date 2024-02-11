@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-users-column-to-certificates-1
+      author: nekear
+      changes:
+        - addColumn:
+            tableName: certificates
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: add-foreign-key-constraint-to-certificates-2
+      author: nekear
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_certificates_users
+            baseTableName: certificates
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
